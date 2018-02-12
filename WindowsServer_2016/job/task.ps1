@@ -24,7 +24,9 @@ Function Fail-ShippableBuild() {
 Function task() {
   init_integrations
   <% _.each(obj.script, function(cmd) { %>
-    exec_cmd '<%= cmd %>'
+exec_cmd @'
+<%= cmd %>
+'@
   <% }) %>
   cleanup_integrations
 }
@@ -34,7 +36,9 @@ Function on_success() {
   <% _.each(obj.onSuccess.script, function(cmd) { %>
     Try
     {
-      Invoke-Expression '<%= cmd %>'
+Invoke-Expression @'
+<%= cmd %>
+'@
     }
     Catch
     {
@@ -52,7 +56,9 @@ Function on_failure() {
   <% _.each(obj.onFailure.script, function(cmd) { %>
     Try
     {
-      Invoke-Expression '<%= cmd %>'
+Invoke-Expression @'
+<%= cmd %>
+'@
     }
     Catch
     {
@@ -70,7 +76,9 @@ Function always() {
   <% _.each(obj.always.script, function(cmd) { %>
     Try
     {
-      Invoke-Expression '<%= cmd %>'
+Invoke-Expression @'
+<%= cmd %>
+'@
     }
     Catch
     {
