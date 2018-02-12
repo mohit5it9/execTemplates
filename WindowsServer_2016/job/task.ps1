@@ -24,7 +24,9 @@ Function Fail-ShippableBuild() {
 Function task() {
   init_integrations
   <% _.each(obj.script, function(cmd) { %>
-    exec_cmd '<%= cmd %>'
+exec_cmd @'
+<%= cmd %>
+'@
   <% }) %>
   cleanup_integrations
 }
