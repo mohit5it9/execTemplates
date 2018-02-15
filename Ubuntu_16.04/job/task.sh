@@ -7,6 +7,11 @@ symlink_build_dir() {
   ln -s $BUILD_DIR /build
 }
 
+# Adding this to support legacy genExec PEM key path
+copy_pem_keys() {
+  cp $BUILD_SECRETS_DIR/*.pem /tmp
+}
+
 add_subscription_ssh_key() {
   exec_cmd "eval `ssh-agent -s`"
   exec_cmd "ssh-add $SUBSCRIPTION_PRIVATE_KEY"
@@ -100,7 +105,6 @@ task() {
     is_success=false
     return $ret;
   fi
-
   ret=0
   is_success=true
   return $ret
@@ -120,6 +124,9 @@ cleanup_integrations() {
 if [ "$TASK_IN_CONTAINER" == true ]; then
   trap before_exit EXIT
   exec_grp "symlink_build_dir" "Symlinking /build dir" "false"
+
+  trap before_exit EXIT
+  exec_grp "copy_pem_keys" "Copying PEM keys to /tmp" "false"
 fi
 
 trap before_exit EXIT
