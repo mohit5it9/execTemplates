@@ -9,7 +9,7 @@ symlink_build_dir() {
 
 # Adding this to support legacy genExec PEM key path
 copy_pem_keys() {
-  cp $BUILD_SECRETS_DIR/*.pem /tmp
+  exec_cmd "cp $BUILD_SECRETS_DIR/*.pem /tmp || true"
 }
 
 add_subscription_ssh_key() {
