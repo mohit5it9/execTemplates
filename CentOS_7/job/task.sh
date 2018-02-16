@@ -64,6 +64,13 @@ init_integrations() {
   <% } %>
 }
 
+install_shipctl() {
+  if [ -f /var/lib/shippable/node/shipctl/"$SHIPPABLE_NODE_ARCHITECTURE"/"$SHIPPABLE_NODE_OPERATING_SYSTEM"/install.sh ]; then
+    exec_cmd "echo 'Installing shipctl components'"
+    /var/lib/shippable/node/shipctl/"$SHIPPABLE_NODE_ARCHITECTURE"/"$SHIPPABLE_NODE_OPERATING_SYSTEM"/install.sh || true
+  fi
+}
+
 task() {
   ret=0
   is_success=""
@@ -129,6 +136,9 @@ fi
 
 trap before_exit EXIT
 exec_grp "add_subscription_ssh_key" "Adding Subscription SSH Key" "false"
+
+trap before_exit EXIT
+exec_grp "install_shipctl" "Installing ship_ctl components" "true"
 
 trap before_exit EXIT
 exec_grp "task" "Executing task: $TASK_NAME" "true" "false"
