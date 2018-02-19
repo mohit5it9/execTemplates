@@ -21,6 +21,22 @@ Function Fail-ShippableBuild() {
   Throw "Fail-ShippableBuild called in script"
 }
 
+Function install_shipctl() {
+  $NODE_DIR = "C:\Users\Administrator\Shippable\node"
+  $shipctlScriptsPath = "$NODE_DIR\shipctl\$env:SHIPPABLE_NODE_ARCHITECTURE\$env:SHIPPABLE_NODE_OPERATING_SYSTEM\install.ps1"
+  if (Test-Path -PathType leaf "$shipctlScriptsPath") {
+    exec_cmd "Write-Output 'Installing shipctl components'"
+    Try
+    {
+      & "$shipctlScriptsPath"
+    }
+    Catch
+    {
+      Write-Output $_
+    }
+  }
+}
+
 Function task() {
   init_integrations
   <% _.each(obj.script, function(cmd) { %>
@@ -141,6 +157,7 @@ Function before_exit() {
 
 Function main() {
   $global:is_success = $TRUE
+  exec_grp "install_shipctl" "Installing ship_ctl components"
   Try
   {
     exec_grp "task" "Executing Task $env:TASK_NAME" $TRUE $FALSE
